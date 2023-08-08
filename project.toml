@@ -1,0 +1,26 @@
+[build-system]
+requires = [
+    "setuptools>=61.0", 
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "graphs_for_science"
+version = "0.0.1"
+authors = [
+  { name="Luca Marchetti", email="00lucamarchetti00@gmail.com" },
+]
+description = "A package for graphing beautiful datasets and fit curves."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/lmarchetti02/graphs-for-data-analysis"
+"Bug Tracker" = "https://github.com/lmarchetti02/graphs-for-data-analysis/issues"
