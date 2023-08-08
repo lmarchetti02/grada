@@ -1,0 +1,20 @@
+FILE DI TESTO CON LE STRINGHE DA MOSTRARE NEL GRAFICO. 
+NON MODIFICARE L'ORDINE DELLE RIGHE, NÈ AGGIUNGERE SPAZI.
+LE PARTI COMPRESE TRA "$ $" SONO DA SCRIVERE IN LATEX.
+#########################################################
+
+Titolo: Grafico $ x^2 $ e $ x^3 $
+
+
+Nome asse delle ascisse: $ x \ \ $ [m]
+
+
+Nome asse delle ordinate: $ y \ \ $ [m]
+
+
+Nome dati 1: Dati sperimentali 1
+Nome dati 1: Dati sperimentali 2
+
+
+Nome funzione 1: $ f(x) = ax^2 \quad \wedge \quad a = 1 $ m$ ^{-1} $
+Nome funzione 2: $ f(x) = bx^3 \quad \wedge \quad b = 1 $ m$ ^{-2} $
