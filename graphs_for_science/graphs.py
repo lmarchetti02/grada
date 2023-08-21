@@ -40,7 +40,6 @@ handler.setFormatter(format)
 logger.addHandler(handler)
 logger_f.addHandler(handler)
 
-logger.
 # ------------------------------------------------------------------------------------
 
 
