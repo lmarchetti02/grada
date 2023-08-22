@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import logging
 import re
+import os
 
 # Matplotlib formatting
 # -----------------------------------------------------------------------------
@@ -11,35 +12,6 @@ matplotlib.rcParams.update({"font.size": 10, "font.family": "STIXGeneral"})
 matplotlib.rcParams["xtick.minor.size"] = 0
 matplotlib.rcParams["xtick.minor.width"] = 0
 # -----------------------------------------------------------------------------
-
-
-# LOGGING
-# ------------------------------------------------------------------------------------
-# Cancella il log precedente
-with open("log.log", "w") as file:
-    file.close()
-
-# Main logger
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# Logger per le funzioni interne a graph.py
-logger_f = logging.getLogger(__name__ + ".Functions")
-logger_f.setLevel(logging.DEBUG)
-logger_f.propagate = False  # evita log ripetuti
-
-# Crea un handler
-handler = logging.FileHandler("log.log")
-handler.setLevel(logging.DEBUG)
-
-# Formatta l'handler
-format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-handler.setFormatter(format)
-
-# Aggiunge l'handler al logger
-logger.addHandler(handler)
-logger_f.addHandler(handler)
-# ------------------------------------------------------------------------------------
 
 
 # TEXT
@@ -232,8 +204,9 @@ class Text:
 
 # INIZIO PROGRAMMA
 # ------------------------------------------------------------------------------------
-# oggetto Text da creare
+# variabili globali
 global_text = None
+logger, logger_f = None, None
 
 
 class Functions:
@@ -372,6 +345,47 @@ class Functions:
         global global_text
         global_text = Text(file_txt)
 
+    @staticmethod
+    def activate_logging(**kwargs):
+        global logger, logger_f
+
+        # Cancella il log precedente
+        with open("log/log.log", "w") as file:
+            file.close()
+
+        # Main logger
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.DEBUG)
+
+        # Logger per le funzioni interne a graph.py
+        logger_f = logging.getLogger(__name__ + ".Functions")
+        logger_f.setLevel(logging.DEBUG)
+        logger_f.propagate = False  # evita log ripetuti
+
+        # Crea un handler
+        handler = logging.FileHandler("log/log.log")
+        handler.setLevel(logging.DEBUG)
+
+        # Formatta l'handler
+        format = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
+        handler.setFormatter(format)
+
+        # Aggiunge l'handler al logger
+        logger.addHandler(handler)
+        logger_f.addHandler(handler)
+
+        status = kwargs.get("status", True)
+
+        if not status:
+            os.remove("log.log")
+            logging.disable(logging.ERROR)
+        elif status:
+            pass
+        else:
+            raise TypeError("The 'status' must be of the bool type.")
+
 
 class Canvas:
     """
@@ -389,6 +403,8 @@ class Canvas:
     dpi: int
         'Dots per inches' dell'immagine (vedi documentazione matplotlib).
         Se non viene specificata, `dpi=150`.
+    log: bool
+        Abilita e disabilità il log del
 
     Parametri opzionali
     ---
@@ -528,7 +544,9 @@ if __name__ == "__main__":
     y1_err = np.full(30, 0.5)
     # ---------------------------
 
-    canvas = Canvas("text.txt")
+    Functions.activate_logging()
+
+    canvas = Canvas("text.txt", log=True, save="prova")
 
     scatter = ScatterPlot("firebrick", "o")
     scatter.draw(canvas, x, y)
@@ -542,4 +560,4 @@ if __name__ == "__main__":
     fit2 = Plot("gold", ac=(0.01, 0.01))
     fit2.draw(canvas, x1, lambda x: x**3)
 
-    canvas.mainloop(show=True)
+    canvas.mainloop(show=False)
