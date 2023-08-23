@@ -44,24 +44,31 @@ Follow the steps below to install _grada_:
 ## Usage
 
 ```python
-import foobar
+from grada import graphs as g
+import numpy as np
 
-# returns 'words'
-foobar.pluralize('word')
+# dataset to be drawn
+x = np.linspace(-5, 5, 50)
+y = x**2
+y_err = np.full(50, 0.5)
 
-# returns 'geese'
-foobar.pluralize('goose')
+# log the process
+g.Functions.activate_logging()
 
-# returns 'phenomenon'
-foobar.singularize('phenomena')
+# create a canvas
+canvas = g.Canvas("text.txt", log=True, save="prova")
+
+# create a scatterplot of the data
+scatter = ScatterPlot("firebrick", "o")
+scatter.draw(canvas, x, y)
+
+# create a fit curve
+fit = Plot("black", ac=(0.01, 0.01))
+fit.draw(canvas, x, lambda x: x**2)
+
+# render the canvas
+canvas.mainloop()
 ```
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
 
 ## License
 
