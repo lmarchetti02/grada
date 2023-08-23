@@ -1,23 +1,6 @@
-### Colori matplotlib per grafici
-
----
-
-<img width="704" alt="colors" src="https://github.com/lmarchetti02/graphs-for-data-analysis/assets/90146345/17c94f95-7054-47dc-9e9f-8ade52ed6390">
-
----
-
 # GRADA: Graphs for Data Analysis
 
 > A library for rendering beautiful plots of analyzed data: scatter plot with error bars and fit curves.
-
-## Table of contents
-
-- [GRADA: Graphs for Data Analysis](#grada-graphs-for-data-analysis)
-  - [Table of contents](#table-of-contents)
-  - [Installation](#installation)
-  - [Usage](#usage)
-  - [Contributing](#contributing)
-  - [License](#license)
 
 ## Installation
 
