@@ -6,7 +6,7 @@
 
 ---
 
-# Graphs For Data Analysis
+# GRADA: Graphs for Data Analysis
 
 > A library for rendering beautiful plots of analyzed data: scatter plot with error bars and fit curves.
 
