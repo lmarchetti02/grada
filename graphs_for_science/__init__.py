@@ -1,5 +1,6 @@
 import os
 
+# creates necessary directories
 try:
     os.mkdir("./img")
     os.mkdir("./log")
