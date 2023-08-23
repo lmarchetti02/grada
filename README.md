@@ -12,14 +12,42 @@
 
 ## Installation
 
-Follow the steps below to install _graphs-for-science_:
+Follow the steps below to install _grada_:
 
-1. Clone the repository
-2. Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+1. Clone the repository in a directory:
 
-```bash
-pip install foobar
-```
+   ```bash
+    git clone https://github.com/lmarchetti02/grada
+   ```
+
+2. Install `wheel`, `setuptools`, `twine`
+
+   ```bash
+    pip3 install wheel
+   ```
+
+   ```bash
+    pip3 install setuptools
+   ```
+
+   ```bash
+    pip3 install twine
+   ```
+
+3. Build the library by running:
+
+   ```bash
+    python3 setup.py bdist_wheel
+   ```
+
+   This will create a folder named 'dist' in the working directory, which contains a file
+   with '.whl' extension
+
+4. Install the library by running:
+
+   ```bash
+   pip install /path/to/wheelfile.whl
+   ```
 
 ## Usage
 
