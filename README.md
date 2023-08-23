@@ -10,6 +10,15 @@
 
 > A library for rendering beautiful plots of analyzed data: scatter plot with error bars and fit curves.
 
+## Table of contents
+
+- [GRADA: Graphs for Data Analysis](#grada-graphs-for-data-analysis)
+  - [Table of contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Contributing](#contributing)
+  - [License](#license)
+
 ## Installation
 
 Follow the steps below to install _grada_:
@@ -73,4 +82,4 @@ Please make sure to update tests as appropriate.
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+See the [LICENCE](LICENCE) file for licence rights and limitations.
