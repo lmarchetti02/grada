@@ -9,7 +9,7 @@ except Exception as e:
     print(e)
 
 # creates the text file
-with open("text/text.txt", "w") as file:
+with open("text/text_example.txt", "w") as file:
     file.write(
         r"""
 FILE DI TESTO CON LE STRINGHE DA MOSTRARE NEL GRAFICO. 

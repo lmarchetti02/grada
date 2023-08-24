@@ -259,7 +259,7 @@ class Functions:
             data_addensato = []
             for i in range(len(data) - 1):
                 n = (
-                    int(round((data[i + 1] - data[i]) / m, 0)) * 2
+                    int(round(abs(data[i + 1] - data[i]) / m, 0)) * 2
                 )  # calcola il numero di dati da aggiungere all'intervallo
 
                 if i < len(data) - 2:
