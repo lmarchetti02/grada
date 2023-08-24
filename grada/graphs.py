@@ -247,7 +247,7 @@ class Functions:
         logger_f.debug(f"Dataset iniziale:\n {data}")
 
         # trova la distanza minima tra due dati consecutivi
-        m = data[1] - data[0]
+        m = abs(data[1] - data[0])
         for i in range(1, len(data) - 1):
             if (_ := abs(data[i + 1] - data[i])) < m:
                 m = _
