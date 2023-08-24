@@ -421,8 +421,6 @@ class Canvas:
     dpi: int
         'Dots per inches' dell'immagine (vedi documentazione matplotlib).
         Se non viene specificata, `dpi=150`.
-    log: bool
-        Abilita e disabilità il log del
 
     Parametri opzionali
     ---
