@@ -38,6 +38,8 @@ def test_allarga_campo():
     _ = np.array([-5, -2, 0, 1, 4, 6])
     res = g.Functions.allarga_campo(_, 0.1, 0.2)
 
+    print(res)
+
     assert len(res) > len(_) and res[0] < _[0] and res[-1] > _[-1]
 
 

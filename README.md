@@ -1,10 +1,13 @@
 # GraDA: Graphs for Data Analysis
 
-> A library for rendering beautiful plots of analyzed data: scatter plot with error bars and fit curves.
+A library for rendering beautiful plots of analyzed data: scatter plot with error bars and fit curves.
 
 ## Description
 
-This library
+This library makes heavy use of the `matplotlib` library, therefor it is necessary to have some
+understanding of that library.
+
+Shortly, _GraDA_ makes it easy to create `matplotlib` plots by setting default values
 
 ## Installation
 

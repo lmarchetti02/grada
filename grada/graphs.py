@@ -318,9 +318,9 @@ class Functions:
         x_all[1:-1] = data
 
         # cancella eventuali doppioni ai limiti esterni
-        if sx - dx < 0:
+        if sx + dx == dx:
             x_all = np.delete(x_all, 0)
-        elif dx - sx < 0:
+        elif sx + dx == sx:
             x_all = np.delete(x_all, -1)
         elif dx + sx == 0:
             x_all = np.delete(x_all, [0, -1])
@@ -346,11 +346,26 @@ class Functions:
         global_text = Text(file_txt)
 
     @staticmethod
-    def activate_logging(**kwargs):
+    def activate_logging(log_file: str = "log.log", **kwargs):
+        """
+        Questa funzione attiva il logging della libreria graph.
+
+        Parametri
+        ---
+        log_file: str
+            File .log dove viene memorizzato il log. Di default è
+            'log.log', ma può essere cambiato.
+
+        Parametri opzionali
+        ---
+        status: bool
+            Attiva il logging se True, lo disattiva se 'False'. Di
+            default viene impostata su True.
+        """
         global logger, logger_f
 
         # Cancella il log precedente
-        with open("log/log.log", "w") as file:
+        with open(f"log/{log_file}", "w") as file:
             file.close()
 
         # Main logger
@@ -537,30 +552,4 @@ class Plot:
 
 
 if __name__ == "__main__":
-    # DATI
-    x = np.linspace(-5, 5, 50)
-    y = x**2
-    y_err = np.full(50, 0.5)
-
-    x1 = np.linspace(-3, 3, 30)
-    y1 = x1**3
-    y1_err = np.full(30, 0.5)
-    # ---------------------------
-
-    Functions.activate_logging()
-
-    canvas = Canvas("text.txt", log=True, save="prova")
-
-    scatter = ScatterPlot("firebrick", "o")
-    scatter.draw(canvas, x, y, yerr=y_err)
-
-    scatter2 = ScatterPlot("navy", "o")
-    scatter2.draw(canvas, x1, y1)
-
-    fit = Plot("black", ac=(0.01, 0.01))
-    fit.draw(canvas, x, lambda x: x**2)
-
-    fit2 = Plot("gold", ac=(0.01, 0.01))
-    fit2.draw(canvas, x1, lambda x: x**3)
-
-    canvas.mainloop(show=False)
+    pass
