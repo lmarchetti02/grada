@@ -379,8 +379,11 @@ class Functions:
         status = kwargs.get("status", True)
 
         if not status:
-            os.remove("log.log")
-            logging.disable(logging.ERROR)
+            try:
+                os.remove("log.log")
+                logging.disable(logging.ERROR)
+            except FileNotFoundError as e:
+                print(e)
         elif status:
             pass
         else:
@@ -439,7 +442,7 @@ class Canvas:
         except Exception:
             logger.exception("Errore nell'ottenimento del testo relativo al canvas.")
 
-    def legenda(self) -> None:
+    def __legenda(self) -> None:
         """
         Quando chiamata, questa funzione mostra la legenda nel grafico.
         Fa parte del mainloop dell'oggetto `Canvas`.
@@ -452,7 +455,7 @@ class Canvas:
         except Exception:
             logger.exception("Errore nel mostrare la legenda.")
 
-    def save(self) -> None:
+    def __save(self) -> None:
         """
         Se l'utente lo vuole, questa funzione salva l'immagine
         nella cartella 'img'.
@@ -467,8 +470,8 @@ class Canvas:
             logger.warning("File non salvato.")
 
     def mainloop(self, show=True) -> None:
-        self.legenda()
-        self.save()
+        self.__legenda()
+        self.__save()
         logger.info("Fine disegno")
 
         # mostra il grafico s
@@ -549,7 +552,7 @@ if __name__ == "__main__":
     canvas = Canvas("text.txt", log=True, save="prova")
 
     scatter = ScatterPlot("firebrick", "o")
-    scatter.draw(canvas, x, y)
+    scatter.draw(canvas, x, y, yerr=y_err)
 
     scatter2 = ScatterPlot("navy", "o")
     scatter2.draw(canvas, x1, y1)

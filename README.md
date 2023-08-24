@@ -2,6 +2,10 @@
 
 > A library for rendering beautiful plots of analyzed data: scatter plot with error bars and fit curves.
 
+## Description
+
+This library
+
 ## Installation
 
 Follow the steps below to install _grada_:
@@ -43,6 +47,8 @@ Follow the steps below to install _grada_:
 
 ## Usage
 
+For a basic graph, try the following piece of code.
+
 ```python
 from grada import graphs as g
 import numpy as np
@@ -58,9 +64,9 @@ g.Functions.activate_logging()
 # create a canvas
 canvas = g.Canvas("text.txt", log=True, save="prova")
 
-# create a scatterplot of the data
+# create a scatter plot of the data (with error bars)
 scatter = ScatterPlot("firebrick", "o")
-scatter.draw(canvas, x, y)
+scatter.draw(canvas, x, y, yerr=y_err)
 
 # create a fit curve
 fit = Plot("black", ac=(0.01, 0.01))
@@ -69,6 +75,8 @@ fit.draw(canvas, x, lambda x: x**2)
 # render the canvas
 canvas.mainloop()
 ```
+
+For information about `matplotlib` colors and marker types see the directory 'info'.
 
 ## License
 
