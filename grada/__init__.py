@@ -26,9 +26,11 @@ Nome asse delle ascisse:
 Nome asse delle ordinate: 
 
 
-Nome dati 1: 
+Nome dati 1:
+Nome dati 2: 
 
 
 Nome funzione 1: 
-    """
+Nome funzione 2: 
+"""
     )
