@@ -102,6 +102,8 @@ For information about `matplotlib` colors and marker types see the directory 'in
 
 ## Images
 
+![example_1](https://github.com/lmarchetti02/grada/assets/90146345/1b2914d6-869d-4bfa-b6d9-8452e5fedfdf)
+
 ## License
 
 See the [LICENCE](LICENCE) file for licence rights and limitations.
