@@ -100,6 +100,10 @@ canvas.mainloop()
 
 For information about `matplotlib` colors and marker types see the directory 'info'.
 
+## Images
+
+![alt text](https://github.com/lmarchetti02/grada/info/example_1.png?raw=true)
+
 ## License
 
 See the [LICENCE](LICENCE) file for licence rights and limitations.
