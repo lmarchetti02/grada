@@ -319,18 +319,23 @@ class Functions:
         x_all = np.empty(len(data) + 2)  # array vuoto da riempire
 
         # crea array con nuovi limiti esterni
-        x_all[0], x_all[-1] = m - sx * delta_x, M + dx * delta_x
-        x_all[1:-1] = data
+        if sx >= 0 and dx >= 0:
+            x_all[0], x_all[-1] = m - sx * delta_x, M + dx * delta_x
+            x_all[1:-1] = data
 
-        # cancella eventuali doppioni ai limiti esterni
-        if sx + dx == dx:
-            x_all = np.delete(x_all, 0)
-        elif sx + dx == sx:
-            x_all = np.delete(x_all, -1)
-        elif dx + sx == 0:
-            x_all = np.delete(x_all, [0, -1])
+            # cancella eventuali doppioni ai limiti esterni
+            if sx + dx == dx and dx != 0:
+                x_all = np.delete(x_all, 0)
+            elif sx + dx == sx and sx != 0:
+                x_all = np.delete(x_all, -1)
+            elif dx + sx == 0:
+                x_all = np.delete(x_all, [0, -1])
 
-        logger_f.debug(f"Dataset allargato da addensare:\n {x_all}")
+            logger_f.debug(f"Dataset allargato da addensare:\n {x_all}")
+        else:
+            raise Exception(
+                logger_f.exception(f"Impossibile allargare l'array: sx={sx}, dx={dx}.")
+            )
 
         return Functions.addensa(x_all, dens)
 
