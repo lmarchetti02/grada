@@ -483,6 +483,12 @@ class Canvas:
             logger.warning("File non salvato.")
 
     def mainloop(self, show=True) -> None:
+        """
+        Funzione necessaria per renderizzare il grafico voluto. Ciò
+        che viene dopo questa funzione non modifica in alcun modo il
+        grafico.
+        """
+
         self.__legenda()
         self.__save()
         logger.info("Fine disegno")
@@ -496,24 +502,58 @@ class Canvas:
 
 
 class ScatterPlot:
+    """
+    Inizializza uno scatter plot dei dati sperimentali forniti
+    dall'utente.
+
+    Parametri
+    ---
+    color: str
+        Il colore (matplotlib) dello scatter plot.
+    marker: str
+        Il tipo di marker (matplotlib) che si vuole utilizzare.
+    ms: float
+        Dimensione dei markers dello scatter plot. Di default
+        viene impostato su 4.
+    """
+
     counter = 0
 
-    def __init__(self, color: str, marker: str):
+    def __init__(self, color: str, marker: str, ms: float = 4):
         logger.info("Creato oggetto 'ScatterPlot'")
 
         self.color = color
         self.marker = marker
         self.text = global_text
+        self.ms = ms
         ScatterPlot.counter += 1
 
     def draw(self, c, x, y, yerr=None):
+        """
+        Una volta creata una istanza di 'Scatterplot', utilizzare questa
+        funzione per assegnare lo scatter plot generato al canvas su cui
+        lo si vuole mostrare.
+
+        Parametri
+        ---
+        c:
+            Istanza di canvas su cui si vuole disegnare lo scatter plot
+        x: numpy.ndarray
+            Valori delle ascisse dei punti dello scatter plot.
+        y: numpy.ndarray
+            Valori delle ordinate dei punti dello scatter plot.
+        yerr: numpy.ndarray
+            Incertezze sui valori di y. Di default viene impostato su None,
+            ovvero non vengono mostrati gli errori.
+        """
+
         c.ax.errorbar(
             x,
             y,
             yerr=yerr,
             marker=self.marker,
             color=self.color,
-            ms=4,  # marker size
+            ms=self.ms,  # marker size
             zorder=2,  # layer
             ls="none",  # line size (none for disconnected dots)
             capsize=2,  # error bars ticks
@@ -523,17 +563,50 @@ class ScatterPlot:
 
 
 class Plot:
+    """
+    Inizializza una curva (tendenzialmente un fit dei dati sperimentali
+    forniti dall'utente).
+
+    Parametri
+    ---
+    color: str
+        Il colore (matplotlib) della curva.
+    ac: tuple
+        La percentuale di allargamento del campo del fit a dx e sx.
+        Di default è (0,0), ovvero non c'è allargamento di campo.
+    lw: float
+        Spessore della linea che rappresenta la funzione. Di default
+        viene impostato su 1.5.
+    """
+
     counter = 0
 
-    def __init__(self, color: str, ac=(0, 0)) -> None:
+    def __init__(self, color: str, ac: tuple = (0, 0), lw: float = 1.5) -> None:
         logger.info("Creato oggetto 'Plot'")
 
         self.color = color
         self.ac = ac
         self.text = global_text
+        self.lw = lw
         Plot.counter += 1
 
     def draw(self, c, x, f):
+        """
+        Una volta creata una istanza di 'Plot', utilizzare questa
+        funzione per assegnare lo scatter plot generato al canvas su cui
+        lo si vuole mostrare.
+
+        Parametri
+        ---
+        c:
+            Istanza di canvas su cui si vuole disegnare lo scatter plot
+        x: numpy.ndarray
+            Valori delle ascisse dei punti su cui si vuole costruire
+            la funzione.
+        f: function
+            Funzione da disegnare.
+        """
+
         # Allarga il campo ed addensa
         x_new = Functions.allarga_campo(x, self.ac[0], self.ac[1])
         logger.debug("Campo della funzione allargato ed addensato.")
@@ -543,7 +616,7 @@ class Plot:
             f(x_new),
             color=self.color,
             zorder=1,
-            lw=1.5,
+            lw=self.lw,
             label=self.text.get_funzione(Plot.counter),
         )
         logger.debug(f"Funzione {Plot.counter} disegnata.")
