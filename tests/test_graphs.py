@@ -7,36 +7,36 @@ g.Functions.activate_logging(status=False)
 
 def test_addensa_equal_elements():
     _ = np.array([-5, -2, 0, 1, 1, 4, 6])
-    res = g.Functions.addensa(_)
+    res = g.Functions.addensa(_, 2)
 
     assert np.array_equal(_, res)
 
 
 def test_addensa():
     _ = np.linspace(-5, 5, num=20)
-    res = g.Functions.addensa(_)
+    res = g.Functions.addensa(_, 10)
 
     assert len(res) > len(_)
 
 
 def test_allarga_campo_extremes():
     _ = np.array([-5, -2, 0, 1, 4, 6])
-    res = g.Functions.allarga_campo(_, 0, 0)
+    res = g.Functions.allarga_campo(_, 0, 0, 2)
 
     assert res[0] == _[0] and res[-1] == _[-1]
 
-    res = g.Functions.allarga_campo(_, 0, 0.1)
+    res = g.Functions.allarga_campo(_, 0, 0.1, 2)
 
     assert res[0] != res[1]
 
-    res = g.Functions.allarga_campo(_, 0.1, 0)
+    res = g.Functions.allarga_campo(_, 0.1, 0, 2)
 
     assert res[-1] != res[-2]
 
 
 def test_allarga_campo():
     _ = np.array([-5, -2, 0, 1, 4, 6])
-    res = g.Functions.allarga_campo(_, 0.1, 0.2)
+    res = g.Functions.allarga_campo(_, 0.1, 0.2, 2)
 
     print(res)
 

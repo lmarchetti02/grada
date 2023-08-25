@@ -216,7 +216,7 @@ class Functions:
     """
 
     @staticmethod
-    def addensa(data):
+    def addensa(data, d: int):
         """
         Questa funzione prede come input un set di dati, forniti dall'utente sotto
         forma di array numpy, e restituisce un altro array con maggiore densità (più
@@ -224,12 +224,14 @@ class Functions:
 
         In particolare, la funzione calcola la distanza minima tra due dati consecutivi
         ed aggiunge tanti dati quanti servono, affinché la distanza tra tutte le coppie di dati
-        sia circa la metà di quella minima.
+        sia circa quella minima diviso 'd'.
 
         Parametri
         ---
         data: numpy.ndarray
             Array che si desidera "addensare".
+        d: int
+            Numero di volte in cui si vuole dividere la distanza minima.
 
         Esempio
         ---
@@ -259,7 +261,7 @@ class Functions:
             data_addensato = []
             for i in range(len(data) - 1):
                 n = (
-                    int(round(abs(data[i + 1] - data[i]) / m, 0)) * 2
+                    int(round(abs(data[i + 1] - data[i]) / m, 0)) * d
                 )  # calcola il numero di dati da aggiungere all'intervallo
 
                 if i < len(data) - 2:
@@ -272,12 +274,12 @@ class Functions:
             res = np.array([i for sublist in data_addensato for i in sublist])
             logger_f.debug(f"Dataset finale:\n {res}")
         else:
-            logger_f.error("Impossibile addensare i dati")
+            logger_f.error(f"Impossibile addensare i dati: distanza minima --> {m}")
 
         return res
 
     @staticmethod
-    def allarga_campo(data, sx, dx):
+    def allarga_campo(data, sx, dx, dens: int):
         """
         Questa funzione prede come input un array numpy e lo allunga. Serve per
         allargare il campo dei fit.
@@ -296,6 +298,8 @@ class Functions:
             Percentuale di allungamento a sinistra dell'array.
         dx: float
             Percentuale di allungamento a destra dell'array.
+        dens: int
+            Corrisponde al parametro di 'd' della funzione `addensa()`.
 
         Esempio
         ---
@@ -308,6 +312,7 @@ class Functions:
         """
 
         logger_f.info("Chiamata funzione 'allarga_campo()'.")
+        logger_f.debug(f"Dataset iniziale:\n {data}")
 
         delta_x = max(data) - min(data)  # ampiezza campione
         m, M = min(data), max(data)  # limiti esterni
@@ -325,7 +330,9 @@ class Functions:
         elif dx + sx == 0:
             x_all = np.delete(x_all, [0, -1])
 
-        return Functions.addensa(x_all)
+        logger_f.debug(f"Dataset allargato da addensare:\n {x_all}")
+
+        return Functions.addensa(x_all, dens)
 
     @staticmethod
     def get_text(file_txt: str) -> None:
@@ -590,7 +597,7 @@ class Plot:
         self.lw = lw
         Plot.counter += 1
 
-    def draw(self, c, x, f):
+    def draw(self, c, x, f, dens: int = 2):
         """
         Una volta creata una istanza di 'Plot', utilizzare questa
         funzione per assegnare lo scatter plot generato al canvas su cui
@@ -605,10 +612,13 @@ class Plot:
             la funzione.
         f: function
             Funzione da disegnare.
+        dens: int
+            Corrisponde al parametro 'd' della funzione `addensa()`. Di
+            default è impostato su 2.
         """
 
         # Allarga il campo ed addensa
-        x_new = Functions.allarga_campo(x, self.ac[0], self.ac[1])
+        x_new = Functions.allarga_campo(x, self.ac[0], self.ac[1], dens)
         logger.debug("Campo della funzione allargato ed addensato.")
 
         c.ax.plot(
