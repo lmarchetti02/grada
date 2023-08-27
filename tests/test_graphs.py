@@ -43,30 +43,38 @@ def test_allarga_campo():
     assert len(res) > len(_) and res[0] < _[0] and res[-1] > _[-1]
 
 
-# # DATI
-# x = np.linspace(-5, 5, 50)
-# y = x**2
-# y_err = np.full(50, 0.5)
+def test_get_titolo():
+    text = g.Text("text/text.txt")
+    titolo = text.get_titolo()
 
-# x1 = np.linspace(-3, 3, 30)
-# y1 = x1**3
-# y1_err = np.full(30, 0.5)
-# # ---------------------------
+    assert titolo == "titolo"
 
-# g.Functions.activate_logging()
 
-# canvas = g.Canvas("text.txt", log=True, save="prova")
+def test_get_ascisse():
+    text = g.Text("text/text.txt")
+    ascisse = text.get_ascisse()
 
-# scatter = g.ScatterPlot("firebrick", "o")
-# scatter.draw(canvas, x, y)
+    assert ascisse == "ascisse"
 
-# scatter2 = g.ScatterPlot("navy", "o")
-# scatter2.draw(canvas, x1, y1)
 
-# fit = g.Plot("black", ac=(0.01, 0.01))
-# fit.draw(canvas, x, lambda x: x**2)
+def test_get_ordinate():
+    text = g.Text("text/text.txt")
+    ordinate = text.get_ordinate()
 
-# fit2 = g.Plot("gold", ac=(0.01, 0.01))
-# fit2.draw(canvas, x1, lambda x: x**3)
+    assert ordinate == "ordinate"
 
-# canvas.mainloop(show=False)
+
+def test_get_dati():
+    text = g.Text("text/text.txt")
+    dati1 = text.get_dati(1)
+    dati2 = text.get_dati(2)
+
+    assert dati1 == "dati 1" and dati2 == "dati 2"
+
+
+def test_get_funzione():
+    text = g.Text("text/text.txt")
+    funzione1 = text.get_funzione(1)
+    funzione2 = text.get_funzione(2)
+
+    assert funzione1 == "funzione 1" and funzione2 == "funzione 2"

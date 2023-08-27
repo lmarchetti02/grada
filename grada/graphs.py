@@ -4,6 +4,7 @@ import numpy as np
 import logging
 import re
 import os
+from typing import Optional, Tuple, Callable, Pattern, List, TypeVar
 
 # Matplotlib formatting
 # -----------------------------------------------------------------------------
@@ -17,7 +18,7 @@ matplotlib.rcParams["xtick.minor.width"] = 0
 # TEXT
 # ------------------------------------------------------------------------------------
 # DEFINIZIONE ESPRESSIONI REGOLARI
-titoloRegex = re.compile(
+titoloRegex: Pattern[str] = re.compile(
     r"""
     (Titolo:)
     (\s)*
@@ -26,7 +27,7 @@ titoloRegex = re.compile(
     re.VERBOSE,
 )
 
-ascisseRegex = re.compile(
+ascisseRegex: Pattern[str] = re.compile(
     r"""
     (Nome)(\s)(asse)(\s)(delle)(\s)(ascisse:)
     (\s)*
@@ -35,7 +36,7 @@ ascisseRegex = re.compile(
     re.VERBOSE,
 )
 
-ordinateRegex = re.compile(
+ordinateRegex: Pattern[str] = re.compile(
     r"""
     (Nome)(\s)(asse)(\s)(delle)(\s)(ordinate:)
     (\s)*
@@ -44,7 +45,7 @@ ordinateRegex = re.compile(
     re.VERBOSE,
 )
 
-datiRegex = re.compile(
+datiRegex: Pattern[str] = re.compile(
     r"""
     (Nome)(\s)(dati)(\s)
     (\d)*
@@ -55,7 +56,7 @@ datiRegex = re.compile(
     re.VERBOSE,
 )
 
-funzioneRegex = re.compile(
+funzioneRegex: Pattern[str] = re.compile(
     r"""
     (Nome)(\s)(funzione)(\s)
     (\d)*
@@ -93,10 +94,14 @@ class Text:
 
         logger.info("Chiamata funzione 'get_titolo()'.")
 
+        res: str = ""
+
         for line in self.lines:
             if _ := titoloRegex.search(line):
                 logger.debug(f"Trovato ed ottenuto il titolo --> {_.groups()[-1]}.")
-                return _.groups()[-1]
+                res = _.groups()[-1]
+
+        return res
 
     def get_ascisse(self) -> str:
         """
@@ -107,12 +112,16 @@ class Text:
 
         logger.info("Chiamata funzione 'get_ascisse()'.")
 
+        res: str = ""
+
         for line in self.lines:
             if _ := ascisseRegex.search(line):
                 logger.debug(
                     f"Trovato ed ottenuto il nome delle ascisse --> {_.groups()[-1]}."
                 )
-                return _.groups()[-1]
+                res = _.groups()[-1]
+
+        return res
 
     def get_ordinate(self) -> str:
         """
@@ -123,12 +132,16 @@ class Text:
 
         logger.info("Chiamata funzione 'get_ordinate()'.")
 
+        res: str = ""
+
         for line in self.lines:
             if _ := ordinateRegex.search(line):
                 logger.debug(
                     f"Trovato ed ottenuto il nome delle ordinate --> {_.groups()[-1]}."
                 )
-                return _.groups()[-1]
+                res = _.groups()[-1]
+
+        return res
 
     def get_dati(self, n: int) -> str:
         """
@@ -147,8 +160,8 @@ class Text:
 
         logger.info("Chiamata funzione 'get_dati()'.")
 
-        res = []
-        counter = 0
+        res: List[str] = []
+        counter: int = 0
 
         try:
             for line in self.lines:
@@ -205,8 +218,9 @@ class Text:
 # INIZIO PROGRAMMA
 # ------------------------------------------------------------------------------------
 # variabili globali
-global_text = None
-logger, logger_f = None, None
+global_text: Text = None
+logger: logging.Logger = None
+logger_f: logging.Logger = None
 
 
 class Functions:
@@ -216,7 +230,7 @@ class Functions:
     """
 
     @staticmethod
-    def addensa(data, d: int):
+    def addensa(data: np.ndarray, d: int) -> np.ndarray:
         """
         Questa funzione prede come input un set di dati, forniti dall'utente sotto
         forma di array numpy, e restituisce un altro array con maggiore densità (più
@@ -279,7 +293,7 @@ class Functions:
         return res
 
     @staticmethod
-    def allarga_campo(data, sx, dx, dens: int):
+    def allarga_campo(data: np.ndarray, sx: float, dx: float, dens: int) -> np.ndarray:
         """
         Questa funzione prede come input un array numpy e lo allunga. Serve per
         allargare il campo dei fit.
@@ -358,7 +372,7 @@ class Functions:
         global_text = Text(file_txt)
 
     @staticmethod
-    def activate_logging(log_file: str = "log.log", **kwargs):
+    def activate_logging(log_file: Optional[str] = "log.log", **kwargs):
         """
         Questa funzione attiva il logging della libreria graph.
 
@@ -410,7 +424,7 @@ class Functions:
                 os.remove("log.log")
                 logging.disable(logging.ERROR)
             except FileNotFoundError as e:
-                print(e)
+                logger_f.exception(e)
         elif status:
             pass
         else:
@@ -454,7 +468,13 @@ class Canvas:
 
         return cls.__instance
 
-    def __init__(self, text: str, fs: tuple = (12, 8), dpi: int = 150, **kwargs):
+    def __init__(
+        self,
+        text: str,
+        fs: Optional[Tuple[int, int]] = (12, 8),
+        dpi: Optional[int] = 150,
+        **kwargs,
+    ) -> None:
         logger.info("Creato oggetto Canvas")
 
         self.fig, self.ax = plt.subplots(figsize=(fs[0], fs[1]), dpi=dpi)
@@ -506,7 +526,7 @@ class Canvas:
         else:
             logger.warning("File non salvato.")
 
-    def mainloop(self, show=True) -> None:
+    def mainloop(self, show: Optional[bool] = True) -> None:
         """
         Funzione necessaria per renderizzare il grafico voluto. Ciò
         che viene dopo questa funzione non modifica in alcun modo il
@@ -541,9 +561,9 @@ class ScatterPlot:
         viene impostato su 4.
     """
 
-    counter = 0
+    counter: int = 0
 
-    def __init__(self, color: str, marker: str, ms: float = 4):
+    def __init__(self, color: str, marker: str, ms: Optional[float] = 4) -> None:
         logger.info("Creato oggetto 'ScatterPlot'")
 
         self.color = color
@@ -552,7 +572,9 @@ class ScatterPlot:
         self.ms = ms
         ScatterPlot.counter += 1
 
-    def draw(self, c, x, y, yerr=None):
+    def draw(
+        self, c: Canvas, x: np.ndarray, y: np.ndarray, yerr: Optional[np.ndarray] = None
+    ) -> None:
         """
         Una volta creata una istanza di 'Scatterplot', utilizzare questa
         funzione per assegnare lo scatter plot generato al canvas su cui
@@ -603,9 +625,11 @@ class Plot:
         viene impostato su 1.5.
     """
 
-    counter = 0
+    counter: int = 0
 
-    def __init__(self, color: str, ac: tuple = (0, 0), lw: float = 1.5) -> None:
+    def __init__(
+        self, color: str, ac: Optional[tuple] = (0, 0), lw: Optional[float] = 1.5
+    ) -> None:
         logger.info("Creato oggetto 'Plot'")
 
         self.color = color
@@ -614,7 +638,13 @@ class Plot:
         self.lw = lw
         Plot.counter += 1
 
-    def draw(self, c, x, f, dens: int = 2):
+    def draw(
+        self,
+        c: Canvas,
+        x: np.ndarray,
+        f: Callable[[np.ndarray], np.ndarray],
+        dens: Optional[int] = 2,
+    ) -> None:
         """
         Una volta creata una istanza di 'Plot', utilizzare questa
         funzione per assegnare lo scatter plot generato al canvas su cui
