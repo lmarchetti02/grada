@@ -420,7 +420,7 @@ class Functions:
 class Canvas:
     """
     Inizializza un piano cartesiano su cui è possibile disegnare dataset e
-    funzioni.
+    funzioni. L'oggetto Canvas dev'essere unico.
 
     Parametri
     ---
@@ -441,6 +441,18 @@ class Canvas:
         cartella ~/img con il nome indicato da tale parametro.
 
     """
+
+    __instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls.__instance is None:
+            logger.info("Non ci sono oggetti Canvas già creati.")
+            cls.__instance = super().__new__(cls)
+        else:
+            logger.warning("Esiste già un oggetto Canvas.")
+            plt.close()
+
+        return cls.__instance
 
     def __init__(self, text: str, fs: tuple = (12, 8), dpi: int = 150, **kwargs):
         logger.info("Creato oggetto Canvas")
