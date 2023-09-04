@@ -372,9 +372,9 @@ class Functions:
         global_text = Text(file_txt)
 
     @staticmethod
-    def activate_logging(log_file: Optional[str] = "log.log", **kwargs):
+    def activate_logging(status: bool = False, **kwargs) -> None:
         """
-        Questa funzione attiva il logging della libreria graph.
+        Questa funzione attiva il logging della libreria propagazione.
 
         Parametri
         ---
@@ -388,7 +388,9 @@ class Functions:
             Attiva il logging se True, lo disattiva se 'False'. Di
             default viene impostata su True.
         """
+
         global logger, logger_f
+        log_file = kwargs.get("log_file", "log.log")
 
         # Cancella il log precedente
         with open(f"log/{log_file}", "w") as file:
@@ -416,8 +418,6 @@ class Functions:
         # Aggiunge l'handler al logger
         logger.addHandler(handler)
         logger_f.addHandler(handler)
-
-        status = kwargs.get("status", True)
 
         if not status:
             try:
@@ -456,6 +456,10 @@ class Canvas:
     save: str
         Se passata come parametro, l'immagine creata viene salvata nella
         cartella ~/img con il nome indicato da tale parametro.
+    log_file: str
+        Se viene indicato un file di tipo '.log', si attiva il
+        logging della libreria, che viene salvato nel file specificato.
+
 
     """
 
@@ -475,10 +479,14 @@ class Canvas:
         text: str,
         fs: Optional[Tuple[int, int]] = (12, 8),
         dpi: Optional[int] = 150,
-        log: Tuple[bool, str] = (True, "log.log"),
         **kwargs,
     ) -> None:
-        Functions.activate_logging(log[1], status=log[0])
+        log = kwargs.get("log_file", False)
+
+        if log:
+            Functions.activate_logging(status=True, log_file=log)
+        else:
+            Functions.activate_logging()
 
         logger.info("Creato oggetto Canvas")
 
