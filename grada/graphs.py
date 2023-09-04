@@ -473,8 +473,12 @@ class Canvas:
         text: str,
         fs: Optional[Tuple[int, int]] = (12, 8),
         dpi: Optional[int] = 150,
+        log: Tuple[bool, str] = (True, "log.log"),
         **kwargs,
     ) -> None:
+        
+        Functions.activate_logging(log[1], status=log[0])
+
         logger.info("Creato oggetto Canvas")
 
         self.fig, self.ax = plt.subplots(figsize=(fs[0], fs[1]), dpi=dpi)
