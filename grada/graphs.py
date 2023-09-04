@@ -447,6 +447,9 @@ class Canvas:
     dpi: int
         'Dots per inches' dell'immagine (vedi documentazione matplotlib).
         Se non viene specificata, `dpi=150`.
+    log: tuple
+        Attiva e disattiva il log della libreria, oltre a dafinire il nome del file
+        '.log'. Di default è impostato su `(True, "log.log")`
 
     Parametri opzionali
     ---
@@ -460,10 +463,9 @@ class Canvas:
 
     def __new__(cls, *args, **kwargs):
         if cls.__instance is None:
-            logger.info("Non ci sono oggetti Canvas già creati.")
             cls.__instance = super().__new__(cls)
         else:
-            logger.warning("Esiste già un oggetto Canvas.")
+            print("Esiste già un oggetto Canvas.")
             plt.close()
 
         return cls.__instance
@@ -476,7 +478,6 @@ class Canvas:
         log: Tuple[bool, str] = (True, "log.log"),
         **kwargs,
     ) -> None:
-        
         Functions.activate_logging(log[1], status=log[0])
 
         logger.info("Creato oggetto Canvas")
