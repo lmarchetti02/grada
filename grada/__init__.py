@@ -3,10 +3,18 @@ import os
 # creates necessary directories
 try:
     os.mkdir("./img")
+except Exception as _:
+    print("La directory '/img' esiste già.")
+
+try:
     os.mkdir("./log")
+except Exception as _:
+    print("La directory '/log' esiste già.")
+
+try:
     os.mkdir("./text")
-except Exception as e:
-    print(e)
+except Exception as _:
+    print("La directory '/text' esiste già.")
 
 # creates the text file
 with open("text/text_example.txt", "w") as file:
