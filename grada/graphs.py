@@ -416,7 +416,7 @@ class Functions:
 class Canvas:
     """
     Inizializza un piano cartesiano su cui è possibile disegnare dataset e
-    funzioni. L'oggetto Canvas dev'essere unico.
+    funzioni.
 
     Parametri
     ---
