@@ -302,6 +302,8 @@ class Functions:
                 else:
                     data_addensato.append(list(np.linspace(data[i], data[i + 1], n)))
 
+                logger_f.debug(f"Dataset --> {data_addensato}")
+
             res = np.array([i for sublist in data_addensato for i in sublist])
             logger_f.debug(f"Dataset finale:\n {res}")
         else:
@@ -368,7 +370,12 @@ class Functions:
                 logger_f.exception(f"Impossibile allargare l'array: sx={sx}, dx={dx}.")
             )
 
-        return Functions.addensa(x_all, dens)
+        if dens > 1:
+            return Functions.addensa(x_all, dens)
+        elif dens == 1:
+            return x_all
+        else:
+            raise Exception(logger_f.exception("La densità non può essere negativa."))
 
     @staticmethod
     def activate_logging(log_file: str = "log_graphs.log") -> None:
