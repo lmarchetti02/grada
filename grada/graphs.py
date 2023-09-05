@@ -69,11 +69,27 @@ funzioneRegex: Pattern[str] = re.compile(
 
 
 class Text:
-    def __init__(self, file: str) -> None:
+    def __init__(self, text_file: str, **kwargs) -> None:
+        # logging
+        self.log = kwargs.get("log_file", False)
+
+        if self.log:
+            try:
+                os.remove("log/self.log")
+            except Exception as _:
+                print(f"Il file {self.log} non esiste.")
+            Functions.activate_logging(log_file=self.log)
+        else:
+            try:
+                os.remove("log/log_graphs.log")
+            except Exception as _:
+                print("Il file log.log non esiste.")
+            Functions.activate_logging()
+
         logger_t.info("Creato oggetto 'Text'.")
 
         try:
-            with open(file) as self.file:
+            with open(text_file) as self.file:
                 logger_t.debug("File di testo (sorgente) aperto.")
 
                 self.lines = (
@@ -85,6 +101,12 @@ class Text:
         except Exception:
             logger_t.exception("Errore nell'apertura del file")
 
+        self.titolo: str = ""
+        self.ascisse: str = ""
+        self.ordinate: str = ""
+        self.dati: List[str] = []
+        self.funzioni: List[str] = []
+
     def get_titolo(self) -> str:
         """
         Questa funzione cerca la riga con il titolo del grafico mediante
@@ -94,14 +116,12 @@ class Text:
 
         logger_t.info("Chiamata funzione 'get_titolo()'.")
 
-        res: str = ""
-
         for line in self.lines:
             if _ := titoloRegex.search(line):
                 logger_t.debug(f"Trovato ed ottenuto il titolo --> {_.groups()[-1]}.")
-                res = _.groups()[-1]
+                self.titolo = _.groups()[-1]
 
-        return res
+        return self.titolo
 
     def get_ascisse(self) -> str:
         """
@@ -112,16 +132,14 @@ class Text:
 
         logger_t.info("Chiamata funzione 'get_ascisse()'.")
 
-        res: str = ""
-
         for line in self.lines:
             if _ := ascisseRegex.search(line):
                 logger_t.debug(
                     f"Trovato ed ottenuto il nome delle ascisse --> {_.groups()[-1]}."
                 )
-                res = _.groups()[-1]
+                self.ascisse = _.groups()[-1]
 
-        return res
+        return self.ascisse
 
     def get_ordinate(self) -> str:
         """
@@ -132,16 +150,14 @@ class Text:
 
         logger_t.info("Chiamata funzione 'get_ordinate()'.")
 
-        res: str = ""
-
         for line in self.lines:
             if _ := ordinateRegex.search(line):
                 logger_t.debug(
                     f"Trovato ed ottenuto il nome delle ordinate --> {_.groups()[-1]}."
                 )
-                res = _.groups()[-1]
+                self.ordinate = _.groups()[-1]
 
-        return res
+        return self.ordinate
 
     def get_dati(self, n: int) -> str:
         """
@@ -158,9 +174,8 @@ class Text:
             così via.
         """
 
-        logger_t.info("Chiamata funzione 'get_dati()'.")
+        logger_t.info(f"Chiamata funzione 'get_dati({n})'.")
 
-        res: List[str] = []
         counter: int = 0
 
         try:
@@ -170,10 +185,10 @@ class Text:
                     logger_t.debug(
                         f"Trovato il nome del dataset {counter} --> {_.groups()[-1]}."
                     )
-                    res.append(_.groups()[-1])
+                    self.dati.append(_.groups()[-1])
 
             logger_t.info(f"Ottenuto il nome del dataset {n}.")
-            return res[n - 1]
+            return self.dati[n - 1]
         except Exception:
             logger_t.exception("Errore nella restituzione del nome dei dati.")
 
@@ -194,7 +209,6 @@ class Text:
 
         logger_t.info("Chiamata funzione 'get_dati()'.")
 
-        res = []
         counter = 0
 
         try:
@@ -204,10 +218,10 @@ class Text:
                     logger_t.debug(
                         f"Trovato il nome della funzione {counter} --> {_.groups()[-1]}."
                     )
-                    res.append(_.groups()[-1])
+                    self.funzioni.append(_.groups()[-1])
 
             logger_t.info(f"Ottenuto il nome della funzione {n}.")
-            return res[n - 1]
+            return self.funzioni[n - 1]
         except Exception:
             logger_t.exception("Errore nella restituzione del nome della funzione.")
 
@@ -218,10 +232,12 @@ class Text:
 # INIZIO PROGRAMMA
 # ------------------------------------------------------------------------------------
 # variabili globali
-global_text: Text = None
+# global_text: Text = None
 logger: logging.Logger = None
 logger_f: logging.Logger = None
 logger_t: logging.Logger = None
+counter_scatter_plots: int = 0
+counter_plots: int = 0
 
 
 class Functions:
@@ -355,24 +371,6 @@ class Functions:
         return Functions.addensa(x_all, dens)
 
     @staticmethod
-    def get_text(file_txt: str) -> None:
-        """
-        Quando chiamata, questa funzione attacca un oggetto
-        `Text` alla variabile `global_text`. In questo modo, è
-        sufficiente indicare il file di testo come parametro una
-        volta sola (tutte le classi fanno riferimento a `global_text`).
-
-        Parametri
-        ---
-        file_txt: str
-            File .txt dove sono memorizzate le stringhe di testo
-            da mostrare nel grafico.
-        """
-
-        global global_text
-        global_text = Text(file_txt)
-
-    @staticmethod
     def activate_logging(log_file: str = "log_graphs.log") -> None:
         """
         Questa funzione attiva il logging della libreria propagazione.
@@ -462,28 +460,24 @@ class Canvas:
 
     def __init__(
         self,
-        text: str,
+        text: Text,
         fs: Optional[Tuple[int, int]] = (12, 8),
         dpi: Optional[int] = 150,
         **kwargs,
     ) -> None:
-        # logging
-        self.log = kwargs.get("log_file", False)
-
-        if self.log:
-            Functions.activate_logging(log_file=self.log)
-        else:
-            Functions.activate_logging()
-
         logger.info("Creato oggetto Canvas")
+
+        global counter_scatter_plots, counter_plots
+        counter_scatter_plots = 0
+        counter_plots = 0
 
         # def proprietà grafico
         self.fig, self.ax = plt.subplots(figsize=(fs[0], fs[1]), dpi=dpi)
         self.kwargs = kwargs
 
         # testo
-        Functions.get_text(text)
-        self.text = global_text
+        # Functions.get_text(text)
+        self.text = text
 
         # griglia
         self.ax.grid(color="darkgray", alpha=0.5, linestyle="dashed", lw=0.5)
@@ -561,8 +555,6 @@ class ScatterPlot:
         viene impostato su 4.
     """
 
-    counter: int = 0
-
     def __init__(
         self,
         color: Optional[str] = "firebrick",
@@ -573,12 +565,18 @@ class ScatterPlot:
 
         self.color = color
         self.marker = marker
-        self.text = global_text
         self.ms = ms
-        ScatterPlot.counter += 1
+
+        global counter_scatter_plots
+        counter_scatter_plots += 1
 
     def draw(
-        self, c: Canvas, x: np.ndarray, y: np.ndarray, yerr: Optional[np.ndarray] = None
+        self,
+        c: Canvas,
+        text: Text,
+        x: np.ndarray,
+        y: np.ndarray,
+        yerr: Optional[np.ndarray] = None,
     ) -> None:
         """
         Una volta creata una istanza di 'Scatterplot', utilizzare questa
@@ -588,7 +586,9 @@ class ScatterPlot:
         Parametri
         ---
         c:
-            Istanza di canvas su cui si vuole disegnare lo scatter plot
+            Istanza di canvas su cui si vuole disegnare lo scatter plot.
+        text:
+            Istanza di Text in cui è salvato il testo da mostrare.
         x: numpy.ndarray
             Valori delle ascisse dei punti dello scatter plot.
         y: numpy.ndarray
@@ -608,9 +608,9 @@ class ScatterPlot:
             zorder=2,  # layer
             ls="none",  # line size (none for disconnected dots)
             capsize=2,  # error bars ticks
-            label=self.text.get_dati(ScatterPlot.counter),
+            label=text.get_dati(counter_scatter_plots),
         )
-        logger.debug(f"Dataset {ScatterPlot.counter} disegnato.")
+        logger.debug(f"Dataset {counter_scatter_plots} disegnato.")
 
 
 class Plot:
@@ -631,8 +631,6 @@ class Plot:
         viene impostato su 1.5.
     """
 
-    counter: int = 0
-
     def __init__(
         self,
         color: Optional[str] = "black",
@@ -643,13 +641,15 @@ class Plot:
 
         self.color = color
         self.ac = ac
-        self.text = global_text
         self.lw = lw
-        Plot.counter += 1
+
+        global counter_plots
+        counter_plots += 1
 
     def draw(
         self,
         c: Canvas,
+        text: Text,
         x: np.ndarray,
         f: Callable[[np.ndarray], np.ndarray],
         dens: Optional[int] = 2,
@@ -662,7 +662,9 @@ class Plot:
         Parametri
         ---
         c:
-            Istanza di canvas su cui si vuole disegnare lo scatter plot
+            Istanza di Canvas su cui si vuole disegnare lo scatter plot.
+        text:
+            Istanza di Text in cui è salvato il testo da mostrare.
         x: numpy.ndarray
             Valori delle ascisse dei punti su cui si vuole costruire
             la funzione.
@@ -683,9 +685,9 @@ class Plot:
             color=self.color,
             zorder=1,
             lw=self.lw,
-            label=self.text.get_funzione(Plot.counter),
+            label=text.get_funzione(counter_plots),
         )
-        logger.debug(f"Funzione {Plot.counter} disegnata.")
+        logger.debug(f"Funzione {counter_plots} disegnata.")
 
 
 if __name__ == "__main__":

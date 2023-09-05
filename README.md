@@ -80,19 +80,19 @@ x = np.linspace(-5, 5, 50)
 y = x**2
 y_err = np.full(50, 0.5)
 
-# log the process
-g.Functions.activate_logging()
+# define the text of the plot
+text = g.Text("text/text_example.txt")
 
 # create a canvas
 canvas = g.Canvas("text/text.txt", log=True, save="prova")
 
 # create a scatter plot of the data (with error bars)
 scatter = ScatterPlot("firebrick", "o")
-scatter.draw(canvas, x, y, yerr=y_err)
+scatter.draw(canvas, text, x, y, yerr=y_err)
 
 # create a fit curve
 fit = Plot("black", ac=(0.01, 0.01))
-fit.draw(canvas, x, lambda x: x**2)
+fit.draw(canvas, text, x, lambda x: x**2)
 
 # render the canvas
 canvas.mainloop()
