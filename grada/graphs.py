@@ -70,20 +70,20 @@ funzioneRegex: Pattern[str] = re.compile(
 
 class Text:
     def __init__(self, file: str) -> None:
-        logger.info("Creato oggetto 'Text'.")
+        logger_t.info("Creato oggetto 'Text'.")
 
         try:
             with open(file) as self.file:
-                logger.debug("File di testo (sorgente) aperto.")
+                logger_t.debug("File di testo (sorgente) aperto.")
 
                 self.lines = (
                     self.file.read().splitlines()
                 )  # memorizza le righe del file
                 self.file.close()  # chiude il file
 
-                logger.debug("File di testo (sorgente) chiuso.")
+                logger_t.debug("File di testo (sorgente) chiuso.")
         except Exception:
-            logger.exception("Errore nell'apertura del file")
+            logger_t.exception("Errore nell'apertura del file")
 
     def get_titolo(self) -> str:
         """
@@ -92,13 +92,13 @@ class Text:
         stringa di testo.
         """
 
-        logger.info("Chiamata funzione 'get_titolo()'.")
+        logger_t.info("Chiamata funzione 'get_titolo()'.")
 
         res: str = ""
 
         for line in self.lines:
             if _ := titoloRegex.search(line):
-                logger.debug(f"Trovato ed ottenuto il titolo --> {_.groups()[-1]}.")
+                logger_t.debug(f"Trovato ed ottenuto il titolo --> {_.groups()[-1]}.")
                 res = _.groups()[-1]
 
         return res
@@ -110,13 +110,13 @@ class Text:
         stringa di testo.
         """
 
-        logger.info("Chiamata funzione 'get_ascisse()'.")
+        logger_t.info("Chiamata funzione 'get_ascisse()'.")
 
         res: str = ""
 
         for line in self.lines:
             if _ := ascisseRegex.search(line):
-                logger.debug(
+                logger_t.debug(
                     f"Trovato ed ottenuto il nome delle ascisse --> {_.groups()[-1]}."
                 )
                 res = _.groups()[-1]
@@ -130,13 +130,13 @@ class Text:
         stringa di testo.
         """
 
-        logger.info("Chiamata funzione 'get_ordinate()'.")
+        logger_t.info("Chiamata funzione 'get_ordinate()'.")
 
         res: str = ""
 
         for line in self.lines:
             if _ := ordinateRegex.search(line):
-                logger.debug(
+                logger_t.debug(
                     f"Trovato ed ottenuto il nome delle ordinate --> {_.groups()[-1]}."
                 )
                 res = _.groups()[-1]
@@ -158,7 +158,7 @@ class Text:
             così via.
         """
 
-        logger.info("Chiamata funzione 'get_dati()'.")
+        logger_t.info("Chiamata funzione 'get_dati()'.")
 
         res: List[str] = []
         counter: int = 0
@@ -167,15 +167,15 @@ class Text:
             for line in self.lines:
                 if _ := datiRegex.search(line):
                     counter += 1
-                    logger.debug(
+                    logger_t.debug(
                         f"Trovato il nome del dataset {counter} --> {_.groups()[-1]}."
                     )
                     res.append(_.groups()[-1])
 
-            logger.info(f"Ottenuto il nome del dataset {n}.")
+            logger_t.info(f"Ottenuto il nome del dataset {n}.")
             return res[n - 1]
         except Exception:
-            logger.exception("Errore nella restituzione del nome dei dati.")
+            logger_t.exception("Errore nella restituzione del nome dei dati.")
 
     def get_funzione(self, n: int) -> str:
         """
@@ -192,7 +192,7 @@ class Text:
             così via.
         """
 
-        logger.info("Chiamata funzione 'get_dati()'.")
+        logger_t.info("Chiamata funzione 'get_dati()'.")
 
         res = []
         counter = 0
@@ -201,15 +201,15 @@ class Text:
             for line in self.lines:
                 if _ := funzioneRegex.search(line):
                     counter += 1
-                    logger.debug(
+                    logger_t.debug(
                         f"Trovato il nome della funzione {counter} --> {_.groups()[-1]}."
                     )
                     res.append(_.groups()[-1])
 
-            logger.info(f"Ottenuto il nome della funzione {n}.")
+            logger_t.info(f"Ottenuto il nome della funzione {n}.")
             return res[n - 1]
         except Exception:
-            logger.exception("Errore nella restituzione del nome della funzione.")
+            logger_t.exception("Errore nella restituzione del nome della funzione.")
 
 
 # ------------------------------------------------------------------------------------
@@ -221,6 +221,7 @@ class Text:
 global_text: Text = None
 logger: logging.Logger = None
 logger_f: logging.Logger = None
+logger_t: logging.Logger = None
 
 
 class Functions:
@@ -383,20 +384,26 @@ class Functions:
             'log.log', ma può essere cambiato.
         """
 
-        global logger, logger_f
+        global logger, logger_f, logger_t
 
         # Cancella il log precedente
-        with open(f"log/{log_file}", "w") as file:
-            file.close()
+        with open(f"log/{log_file}", "w") as f:
+            f.close()
 
         # Main logger
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
+        logger.propagate = False
 
         # Logger per le funzioni interne a graph.py
         logger_f = logging.getLogger(__name__ + ".Functions")
         logger_f.setLevel(logging.DEBUG)
         logger_f.propagate = False  # evita log ripetuti
+
+        # Logger per Text
+        logger_t = logging.getLogger(__name__ + ".Text")
+        logger_t.setLevel(logging.DEBUG)
+        logger_t.propagate = False  # evita log ripetuti
 
         # Crea un handler
         handler = logging.FileHandler(f"log/{log_file}")
@@ -411,6 +418,7 @@ class Functions:
         # Aggiunge l'handler al logger
         logger.addHandler(handler)
         logger_f.addHandler(handler)
+        logger_t.addHandler(handler)
 
 
 class Canvas:
@@ -459,6 +467,7 @@ class Canvas:
         dpi: Optional[int] = 150,
         **kwargs,
     ) -> None:
+        # logging
         self.log = kwargs.get("log_file", False)
 
         if self.log:
@@ -468,6 +477,7 @@ class Canvas:
 
         logger.info("Creato oggetto Canvas")
 
+        # def proprietà grafico
         self.fig, self.ax = plt.subplots(figsize=(fs[0], fs[1]), dpi=dpi)
         self.kwargs = kwargs
 
