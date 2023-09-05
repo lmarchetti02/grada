@@ -372,7 +372,7 @@ class Functions:
         global_text = Text(file_txt)
 
     @staticmethod
-    def activate_logging(status: bool = False, **kwargs) -> None:
+    def activate_logging(log_file: str = "log.log") -> None:
         """
         Questa funzione attiva il logging della libreria propagazione.
 
@@ -381,16 +381,9 @@ class Functions:
         log_file: str
             File .log dove viene memorizzato il log. Di default è
             'log.log', ma può essere cambiato.
-
-        Parametri opzionali
-        ---
-        status: bool
-            Attiva il logging se True, lo disattiva se 'False'. Di
-            default viene impostata su True.
         """
 
         global logger, logger_f
-        log_file = kwargs.get("log_file", "log.log")
 
         # Cancella il log precedente
         with open(f"log/{log_file}", "w") as file:
@@ -419,17 +412,6 @@ class Functions:
         logger.addHandler(handler)
         logger_f.addHandler(handler)
 
-        if not status:
-            try:
-                os.remove(f"log/{log_file}")
-                logging.disable(logging.ERROR)
-            except FileNotFoundError as e:
-                logger_f.exception(e)
-        elif status:
-            pass
-        else:
-            raise TypeError("The 'status' must be of the bool type.")
-
 
 class Canvas:
     """
@@ -447,9 +429,6 @@ class Canvas:
     dpi: int
         'Dots per inches' dell'immagine (vedi documentazione matplotlib).
         Se non viene specificata, `dpi=150`.
-    log: tuple
-        Attiva e disattiva il log della libreria, oltre a dafinire il nome del file
-        '.log'. Di default è impostato su `(True, "log.log")`
 
     Parametri opzionali
     ---
@@ -457,8 +436,7 @@ class Canvas:
         Se passata come parametro, l'immagine creata viene salvata nella
         cartella ~/img con il nome indicato da tale parametro.
     log_file: str
-        Se viene indicato un file di tipo '.log', si attiva il
-        logging della libreria, che viene salvato nel file specificato.
+        Specifica dove si vuole salvare il log della libreria.
 
 
     """
@@ -481,10 +459,10 @@ class Canvas:
         dpi: Optional[int] = 150,
         **kwargs,
     ) -> None:
-        log = kwargs.get("log_file", False)
+        self.log = kwargs.get("log_file", False)
 
-        if log:
-            Functions.activate_logging(status=True, log_file=log)
+        if self.log:
+            Functions.activate_logging(log_file=self.log)
         else:
             Functions.activate_logging()
 
@@ -553,9 +531,6 @@ class Canvas:
         # mostra il grafico s
         if show:
             plt.show()
-            logger.info("Grafico renderizzato.")
-        else:
-            logger.info("Grafico non renderizzato.")
 
 
 class ScatterPlot:
