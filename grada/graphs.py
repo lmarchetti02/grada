@@ -372,7 +372,7 @@ class Functions:
         global_text = Text(file_txt)
 
     @staticmethod
-    def activate_logging(log_file: str = "log.log") -> None:
+    def activate_logging(log_file: str = "log_graphs.log") -> None:
         """
         Questa funzione attiva il logging della libreria propagazione.
 
@@ -541,9 +541,11 @@ class ScatterPlot:
     Parametri
     ---
     color: str
-        Il colore (matplotlib) dello scatter plot.
+        Il colore (matplotlib) dello scatter plot. Di default
+        è impostato su 'firebrick'.
     marker: str
         Il tipo di marker (matplotlib) che si vuole utilizzare.
+        Di default è impostato su 'o'.
     ms: float
         Dimensione dei markers dello scatter plot. Di default
         viene impostato su 4.
@@ -551,7 +553,12 @@ class ScatterPlot:
 
     counter: int = 0
 
-    def __init__(self, color: str, marker: str, ms: Optional[float] = 4) -> None:
+    def __init__(
+        self,
+        color: Optional[str] = "firebrick",
+        marker: Optional[str] = "o",
+        ms: Optional[float] = 4,
+    ) -> None:
         logger.info("Creato oggetto 'ScatterPlot'")
 
         self.color = color
@@ -604,7 +611,8 @@ class Plot:
     Parametri
     ---
     color: str
-        Il colore (matplotlib) della curva.
+        Il colore (matplotlib) della curva. Di default è impostato
+        su 'black'.
     ac: tuple
         La percentuale di allargamento del campo del fit a dx e sx.
         Di default è (0,0), ovvero non c'è allargamento di campo.
@@ -616,7 +624,10 @@ class Plot:
     counter: int = 0
 
     def __init__(
-        self, color: str, ac: Optional[tuple] = (0, 0), lw: Optional[float] = 1.5
+        self,
+        color: Optional[str] = "black",
+        ac: Optional[tuple] = (0, 0),
+        lw: Optional[float] = 1.5,
     ) -> None:
         logger.info("Creato oggetto 'Plot'")
 
