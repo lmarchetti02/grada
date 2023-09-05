@@ -535,6 +535,8 @@ class Canvas:
         # mostra il grafico s
         if show:
             plt.show()
+        elif not show:
+            plt.close()
 
 
 class ScatterPlot:
