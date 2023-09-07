@@ -302,8 +302,6 @@ class Functions:
                 else:
                     data_addensato.append(list(np.linspace(data[i], data[i + 1], n)))
 
-                logger_f.debug(f"Dataset --> {data_addensato}")
-
             res = np.array([i for sublist in data_addensato for i in sublist])
             logger_f.debug(f"Dataset finale:\n {res}")
         else:
