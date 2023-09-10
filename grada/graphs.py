@@ -443,6 +443,13 @@ class Canvas:
 
     Parametri opzionali
     ---
+    xlim: list
+        Lista con limite sx e dx dell'asse delle ascisse.
+    ylim: list
+        Lista con limite inf e sup dell'asse delle ordinate.
+    yscale: str
+        Scala dell'asse delle ordinate. Può essere: 'linear' (default),
+        'log' o 'symlog'.
     save: str
         Se passata come parametro, l'immagine creata viene salvata nella
         cartella ~/img con il nome indicato da tale parametro.
@@ -481,11 +488,21 @@ class Canvas:
         self.kwargs = kwargs
 
         # testo
-        # Functions.get_text(text)
         self.text = text
 
         # griglia
         self.ax.grid(color="darkgray", alpha=0.5, linestyle="dashed", lw=0.5)
+
+        # limiti assi
+        if "xlim" in self.kwargs.keys():
+            self.ax.set_xlim(self.kwargs["xlim"][0], self.kwargs["xlim"][1])
+
+        if "ylim" in self.kwargs.keys():
+            self.ax.set_ylim(self.kwargs["ylim"][0], self.kwargs["ylim"][1])
+
+        # scala assi
+        if "yscale" in self.kwargs.keys():
+            self.ax.set_yscale(self.kwargs["yscale"])
 
         try:
             # nome assi
