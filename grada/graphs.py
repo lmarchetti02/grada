@@ -508,7 +508,7 @@ class Canvas:
             self.ax.set_yscale(self.kwargs["yscale"])
 
         if "xscale" in self.kwargs.keys():
-            self.ax.set_xscale(self.kwargs["yscale"])
+            self.ax.set_xscale(self.kwargs["xscale"])
 
         try:
             # nome assi
