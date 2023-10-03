@@ -450,6 +450,9 @@ class Canvas:
     yscale: str
         Scala dell'asse delle ordinate. Può essere: 'linear' (default),
         'log' o 'symlog'.
+    xscale: str
+        Scala dell'asse delle ascisse. Può essere: 'linear' (default),
+        'log' o 'symlog'.
     save: str
         Se passata come parametro, l'immagine creata viene salvata nella
         cartella ~/img con il nome indicato da tale parametro.
@@ -503,6 +506,9 @@ class Canvas:
         # scala assi
         if "yscale" in self.kwargs.keys():
             self.ax.set_yscale(self.kwargs["yscale"])
+
+        if "xscale" in self.kwargs.keys():
+            self.ax.set_xscale(self.kwargs["yscale"])
 
         try:
             # nome assi
